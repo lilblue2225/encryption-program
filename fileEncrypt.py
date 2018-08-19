@@ -1,4 +1,3 @@
-from passlib.hash import pbkdf2_sha256 as passlib
 from cryptography.fernet import Fernet
 
 #this function takes a file of your choice and encrypts it's contents then
@@ -12,7 +11,7 @@ def encryptFile():
 
     key = Fernet.generate_key() #this generates an encryption key. DO NOT LOSE THIS AS IT'S 
                                 #NEEDED TO DECRYPT THE FILE LATER
-    f = Fernet(key)
+    f = Fernet(key) #create a fernet object with the key in it
     token = f.encrypt(contents.encode()) #encrypts the contents of the file and saves to a variable
     print ('\nEncrypted contents: \n' + token.decode()) #this is the output of the encrypted text
     print ('\nEncryption key (keep this somewhere safe!) \n' + key.decode()) #prints the key for user to writr down
@@ -25,70 +24,63 @@ def encryptFile():
     print('\nOutput encryption key to .txt file (y/n)')
     keyToText = input()
     
-    if keyToText == 'y':
-        keyFile = open('key', 'w')
-        keyFile.write(key.decode())
-        keyFile.close()
+    if keyToText == 'y': #key gets saved to a text file "key.txt"
+        keyFile = open('key.txt', 'w') #open the key file in "write mode"
+        keyFile.write(key.decode()) #writes the key to the file
+        keyFile.close() #always close your files when done!
    
     file2.close()
     file.close()
 
-    main()
+    main() #return to main function
 
-
+#this unction take a file of users choice along with a key and decrypts said
+#file with the key, then outputs it in the console
 def decryptFile():
 
-    #declarations...
-    fileName = ''
-    key = ''
-    decryptedContents = ''
-    
-
+    #enter the key to be used to decrypt the file
     print('Enter key: ')
     key = input()
-    byteKey = key.encode()
+    byteKey = key.encode() #typecasting. encryption keys need to be bytes to be used, user enters 
+                           #it as a bunch of chars
    
-    f = Fernet(byteKey)
+    f = Fernet(byteKey) #create the fernet object with the key in byte form
    
     print('Enter file name:')
-    fileName = input()
+    fileName = input() #user chooses a file to decrypt
    
-    file = open(fileName, 'r')
+    #file is opened in "read mode" and it's contents are saved to variable
+    file = open(fileName, 'r') 
     contents = file.read()
    
-    decryptedContents = f.decrypt(contents.encode())
-    print('\n File contents: \n' + decryptedContents.decode())
+    decryptedContents = f.decrypt(contents.encode()) #decrypts the contents and saves it in variable
+    print('\n File contents: \n' + decryptedContents.decode()+ '\n') #outputs the decrypted contents
    
-    file.close()
+    file.close() #always close these things!!!
 
     main()
 
 
+#the main function of the code. kicks things off
 def main():
 
     print('Do you want to encrypt or decrypt a file?')
 
-    option = input()
+    option = input() #triggers the encrypt, decrypt or exit commands
     
     if option == 'encrypt':
-        encryptFile()
+        encryptFile() #calls the encrypt function
 
     elif option == 'decrypt':
-        decryptFile()
+        decryptFile() #calls the decrypt function
 
     elif option == 'exit':
-        exit()
+        exit() #exits the program
 
+    #exception handling
     else:
         print("Incorrect input! Choose from encrypt, decrypt or exit.")
         main()
 
 
 main()
-
-
-"""
-TODO:
--Program runs fine
--comment all the code
-"""
